@@ -18,6 +18,10 @@ const FilterPanel = ({ activeTab }: FilterPanelProps) => {
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>([]);
   const [bedrooms, setBedrooms] = useState('any');
   const [furnished, setFurnished] = useState('any');
+  const [bathType, setBathType] = useState('any');
+  const [hasYard, setHasYard] = useState(false);
+  const [houseType, setHouseType] = useState('any');
+  const [propertyType, setPropertyType] = useState('any');
 
   const districts = [
     'Центр', 'Арабкир', 'Аван', 'Давидашен', 
@@ -101,25 +105,93 @@ const FilterPanel = ({ activeTab }: FilterPanelProps) => {
 
       <Separator />
 
-      {/* Bedrooms */}
+      {/* Property Type */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Спальни</Label>
-        <Select value={bedrooms} onValueChange={setBedrooms}>
+        <Label className="text-sm font-medium">Тип объекта</Label>
+        <Select value={propertyType} onValueChange={setPropertyType}>
           <SelectTrigger>
-            <SelectValue placeholder="Выберите количество" />
+            <SelectValue placeholder="Выберите тип" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="any">Любое количество</SelectItem>
-            <SelectItem value="studio">Студия</SelectItem>
-            <SelectItem value="1">1 спальня</SelectItem>
-            <SelectItem value="2">2 спальни</SelectItem>
-            <SelectItem value="3">3 спальни</SelectItem>
-            <SelectItem value="4">4+ спальни</SelectItem>
+            <SelectItem value="any">Любой</SelectItem>
+            <SelectItem value="apartment">Квартира</SelectItem>
+            <SelectItem value="house">Дом</SelectItem>
+            <SelectItem value="room">Комната</SelectItem>
+            <SelectItem value="commercial">Коммерция</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <Separator />
+
+      {/* Bedrooms - Priority Filter */}
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-primary">Спальни ⭐ (важный фильтр)</Label>
+        <div className="grid grid-cols-3 gap-2">
+          {['any', 'studio', '1', '2', '3', '4+'].map((option) => (
+            <Button
+              key={option}
+              variant={bedrooms === option ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setBedrooms(option)}
+              className="text-xs"
+            >
+              {option === 'any' ? 'Любое' : option === 'studio' ? 'Студия' : `${option} ${option === '1' ? 'спальня' : 'спальни'}`}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      <Separator />
+
+      {/* Bath Type for Apartments/Rooms */}
+      {(propertyType === 'apartment' || propertyType === 'room' || propertyType === 'any') && (
+        <>
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Ванна/душ</Label>
+            <Select value={bathType} onValueChange={setBathType}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите тип" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Не важно</SelectItem>
+                <SelectItem value="bath">Ванна</SelectItem>
+                <SelectItem value="shower">Душ</SelectItem>
+                <SelectItem value="combined">Совмещённый санузел</SelectItem>
+                <SelectItem value="separate">Раздельный санузел</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Separator />
+        </>
+      )}
+
+      {/* House specific filters */}
+      {(propertyType === 'house' || propertyType === 'any') && (
+        <>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-medium">Собственный двор</Label>
+              <Switch checked={hasYard} onCheckedChange={setHasYard} />
+            </div>
+            
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Тип аренды дома</Label>
+              <Select value={houseType} onValueChange={setHouseType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Не важно</SelectItem>
+                  <SelectItem value="full">Весь дом</SelectItem>
+                  <SelectItem value="part">Часть дома</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <Separator />
+        </>
+      )}
 
       {/* Furnished */}
       <div className="space-y-3">

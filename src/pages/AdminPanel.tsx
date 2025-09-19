@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import AddPropertyForm from '@/components/AddPropertyForm';
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('analytics');
@@ -214,7 +215,7 @@ const AdminPanel = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span>Мои объекты</span>
-                  <Button size="sm">
+                  <Button size="sm" onClick={() => setActiveTab('add-property')}>
                     <Icon name="Plus" size={16} className="mr-2" />
                     Добавить
                   </Button>
@@ -255,6 +256,10 @@ const AdminPanel = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="add-property" className="space-y-6 mt-6">
+            <AddPropertyForm />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6 mt-6">
